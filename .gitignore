@@ -1,0 +1,12 @@
+.env
+*.env
+!*.env.example
+*.log
+*.log.*
+*.retry
+*.vault
+__pycache__/
+.DS_Store
+.vscode/
+ansible/inventory.ini
+ansible/group_vars/monitoring/vault.yml
