@@ -10,6 +10,12 @@ if [ ! -f "$CONFIG_FILE" ]; then
     exit 2
 fi
 
+if [[ ! -r "$CONFIG_FILE" ]]; then
+    echo "ERROR: Telegram configuration is not readable: $CONFIG_FILE" >&2
+    exit 1
+fi
+
+# shellcheck disable=SC1090
 source "$CONFIG_FILE"
 
 LOG_TAIL="$(tail -n 20 "$LOG_FILE" )"

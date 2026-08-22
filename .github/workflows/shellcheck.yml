@@ -1,0 +1,40 @@
+name: ShellCheck
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: Check Bash scripts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck
+        shell: bash
+        run: |
+          mapfile -d '' scripts < <(find . \
+            -type f \
+            -name '*.sh' \
+            -not -path './.git/*' \
+            -print0)
+
+          if ((${#scripts[@]} == 0)); then
+            echo 'No Bash scripts found'
+            exit 0
+          fi
+
+          shellcheck --severity=warning "${scripts[@]}"
