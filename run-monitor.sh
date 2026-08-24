@@ -1,16 +1,10 @@
 #!/usr/bin/env bash
 
-LOG_FILE="/home/trainee/linux-admin-lab/resource-check.log"
-MONITOR="/home/trainee/linux-admin-lab/resource-check.sh"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+LOG_FILE="$SCRIPT_DIR/resource-check.log"
+MONITOR="$SCRIPT_DIR/resource-check.sh"
 
-mkdir -p "$(dirname "$LOG_FILE")"
-
-auto_log() {
-    while IFS= read -r line; do
-        printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$line"
-    done >> "$LOG_FILE"
-}
-
-"$MONITOR" 2>&1 | auto_log
-
-exit "${PIPESTATUS[0]}"
+while IFS= read -r line; do
+    printf '[%s] %s\n' \
+        "$(date '+%Y-%m-%d %H:%M:%S')" "$line"
+done < <("$MONITOR" 2>&1) >> "$LOG_FILE"

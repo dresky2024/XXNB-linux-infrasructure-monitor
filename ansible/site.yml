@@ -1,0 +1,6 @@
+---
+- name: Deploy Linux infrastructure monitor
+  hosts: monitoring
+  become: true
+  roles:
+    - linux_monitor

@@ -1,0 +1,20 @@
+---
+monitor_user: trainee
+monitor_home: /home/trainee
+monitor_dir: /home/trainee/linux-admin-lab
+
+email_to: dresky2022@gmail.com
+
+ping_host: 1.1.1.1
+tcp_host: example.com
+tcp_port: 443
+http_url: https://example.com
+
+cpu_threshold: 80
+ram_threshold: 80
+disk_threshold: 80
+inode_threshold: 80
+
+services_to_check:
+  - ssh
+  - nginx

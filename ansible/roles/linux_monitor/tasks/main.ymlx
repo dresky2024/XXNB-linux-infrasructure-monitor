@@ -1,0 +1,61 @@
+---
+- name: Install monitoring packages
+  ansible.builtin.apt:
+    name:
+      - bash
+      - curl
+      - iputils-ping
+      - logrotate
+      - mailutils
+      - msmtp
+      - msmtp-mta
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create monitor directory
+  ansible.builtin.file:
+    path: "{{ monitor_dir }}"
+    state: directory
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: '0750'
+
+- name: Create monitor config directory
+  ansible.builtin.file:
+    path: "{{ monitor_home }}/.config/linux-admin"
+    state: directory
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: '0700'
+
+- name: Create monitor state directory
+  ansible.builtin.file:
+    path: "{{ monitor_home }}/.cache/linux-admin"
+    state: directory
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: '0700'
+
+- name: Deploy main monitoring script
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../resource-check.sh"
+    dest: "{{ monitor_dir }}/resource-check.sh"
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: '0750'
+
+- name: Deploy monitoring wrapper
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../run-monitor.sh"
+    dest: "{{ monitor_dir }}/run-monitor.sh"
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: '0750'
+
+- name: Configure monitoring cron
+  ansible.builtin.cron:
+    name: Linux infrastructure monitor
+    user: "{{ monitor_user }}"
+    minute: "*/5"
+    job: "{{ monitor_dir }}/run-monitor.sh"
